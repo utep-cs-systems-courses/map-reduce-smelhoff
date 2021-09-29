@@ -175,7 +175,7 @@ def main():
             startTimeWord = time.monotonic()
             result = countByWordsParallel(fileNames, wordsList)
             elapsed = time.monotonic() - startTimeWord
-        if args.document:
+        elif args.document:
             startTimeDocument = time.monotonic()
             result = countByDocumentsParallel(fileNames, wordsList)
             elapsed = time.monotonic() - startTimeDocument
@@ -184,7 +184,7 @@ def main():
             startTimeWord = time.monotonic()
             result = countByWordsSerial(fileNames, wordsList)
             elapsed = time.monotonic() - startTimeWord
-        if args.document:
+        elif args.document:
             startTimeDocument = time.monotonic()
             result = countByDocumentsSerial(fileNames, wordsList)
             elapsed = time.monotonic() - startTimeDocument
