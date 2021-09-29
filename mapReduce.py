@@ -15,7 +15,7 @@ def loadAllWords(file_name):
 
 # Counts the amount of times the provided word is within
 #   the provided list of words. Only exact matches are counted.
-#   If you search for 'love', 'self-love' will not be count.
+#   If you search for 'love', 'self-love' will not be counted.
 # Returns: the number of times the word is counted.
 def wordFrequency(word, words):
     count = 0

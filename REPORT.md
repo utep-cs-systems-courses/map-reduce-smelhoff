@@ -47,7 +47,7 @@ document parallel:
     python3 mapReduce.py -d -p
 
 word parallel with 4 threads:
-    OMP_NUM_THREADS=4 python3 python3 mapReduce.py -w -p
+    OMP_NUM_THREADS=4 python3 mapReduce.py -w -p
 ```
 <br>
 <br>
