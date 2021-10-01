@@ -122,7 +122,7 @@ python3 mapReduce.py -d -p (OMP_NUM_THREADS=8)
     Total search time:  0.9161 seconds
     Total run time:     0.9162 seconds
 
-    python3 mapReduce.py -d -p (OMP_NUM_THREADS=10)
+python3 mapReduce.py -d -p (OMP_NUM_THREADS=10)
     Total read time:    0.3847 seconds
     Total search time:  1.0663 seconds
     Total run time:     1.0663 seconds
