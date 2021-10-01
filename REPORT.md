@@ -59,53 +59,73 @@ The following are results generated using the different methods, the average tim
 **word serial**:  
 ```python
 python3 mapReduce.py -w  
-    Total search time: 5.9887 seconds
-    Total run time: 5.9889 seconds
+    Total read time:    0.0117 seconds
+    Total search time:  5.8229 seconds
+    Total run time:     5.8231 seconds
 ```
 
 **document serial**:  
 ```python
 python3 mapReduce.py -d  
-    Total search time: 6.0722 seconds
-    Total run time: 6.0723 seconds 
+    Total read time:    0.0109 seconds
+    Total search time:  6.0825 seconds
+    Total run time:     6.0827 seconds 
 ```
 
 **word parallel**:  
 ```python
 python3 mapReduce.py -w -p (OMP_NUM_THREADS=1)
-    Total search time: 5.9026 seconds
-    Total run time: 5.9030 seconds
+    Total read time:    0.0112 seconds
+    Total search time:  5.6880 seconds
+    Total run time:     5.6884 seconds
 
 python3 mapReduce.py -w -p (OMP_NUM_THREADS=2)
-    Total search time: 3.5738 seconds
-    Total run time: 3.5741 seconds
+    Total read time:    0.0116 seconds
+    Total search time:  3.9310 seconds
+    Total run time:     3.9311 seconds
 
 python3 mapReduce.py -w -p (OMP_NUM_THREADS=4)
-    Total search time: 1.5341 seconds
-    Total run time: 1.5346 seconds
+    Total read time:    0.0110 seconds
+    Total search time:  1.5174 seconds
+    Total run time:     1.5174 seconds
 
 python3 mapReduce.py -w -p (OMP_NUM_THREADS=8)
-    Total search time: 1.2561 seconds
-    Total run time: 1.2568 seconds
+    Total read time:    0.0112 seconds
+    Total search time:  1.2182 seconds
+    Total run time:     1.2182 seconds
+
+python3 mapReduce.py -w -p (OMP_NUM_THREADS=10)
+    Total read time:    0.0111 seconds
+    Total search time:  0.9834 seconds
+    Total run time:     0.9835 seconds
 ```
 
 **document parallel**:  
 ```python
 python3 mapReduce.py -d -p (OMP_NUM_THREADS=1)
-    Total search time: 5.0441 seconds
-    Total run time: 5.0445 seconds
+    Total read time:    0.2072 seconds
+    Total search time:  4.2235 seconds
+    Total run time:     4.2236 seconds
 
 python3 mapReduce.py -d -p (OMP_NUM_THREADS=2)
-    Total search time: 4.6054 seconds
-    Total run time: 4.6058 seconds
+    Total read time:    0.2861 seconds
+    Total search time:  5.0601 seconds
+    Total run time:     5.0602 seconds
 
 python3 mapReduce.py -d -p (OMP_NUM_THREADS=4)
-    Total search time: 1.7693 seconds
-    Total run time: 1.7696 seconds
+    Total read time:    0.2733 seconds
+    Total search time:  1.3696 seconds
+    Total run time:     1.3696 seconds
 
 python3 mapReduce.py -d -p (OMP_NUM_THREADS=8)
-    Total search time: 0.9678 seconds
-    Total run time: 0.9681 seconds
+    Total read time:    0.2518 seconds
+    Total search time:  0.9161 seconds
+    Total run time:     0.9162 seconds
+
+    python3 mapReduce.py -d -p (OMP_NUM_THREADS=10)
+    Total read time:    0.3847 seconds
+    Total search time:  1.0663 seconds
+    Total run time:     1.0663 seconds
 ```
 <br>
 <br>
@@ -153,7 +173,7 @@ After running all the tests, I realized that increasing the number of threads sp
 When you have 8 documents, and are distributing each one among processes, after 8 threads, there is no significant performance increase.  
 I believe this happens because with 8 threads, you have already distributed the amount of work in the best way possible.  
 It seemed like no matter how many more threads were added, the performance increase started to hit a limit.  
-In the case of the word parallel method, the total run time kept getting closer to 1 second.  
+In this case, both parallel methods were approaching the time in which it took to read the files.  
 
 Another thing I noticed is that the performance of the serial methods almost matched the parallel methods with 1 thread.  
 This made me realize that serial algorithms are basically like only having 1 thread available to perform the work.  

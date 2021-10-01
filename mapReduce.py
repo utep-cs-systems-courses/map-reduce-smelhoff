@@ -4,18 +4,23 @@ import pymp
 import argparse
 import re
 
+fileReadTime = 0
+
 # Reads the text of the provided file, and
 #   splits it into a list including punctuation.
 # Returns: the list of all split items.
 def loadAllWords(file_name):
+    global fileReadTime
+    start = time.monotonic()
     with open(file_name, 'r') as file:
         words = file.read()
+    fileReadTime += (time.monotonic() - start)
     return re.findall(r"[\w']+|[.,!?;]", words)
 
 
 # Counts the amount of times the provided word is within
 #   the provided list of words. Only exact matches are counted.
-#   If you search for 'love', 'self-love' will not be counted.
+#   If you search for 'love', 'self-love' will not be count.
 # Returns: the number of times the word is counted.
 def wordFrequency(word, words):
     count = 0
@@ -70,6 +75,7 @@ def countByWordsSerial(fileNames, searchedWords):
 #   in parallel by splitting the documents among processes.
 # Returns: the shared dictionary containing the words and freq.
 def countByDocumentsParallel(fileNames, searchedWords):
+    global fileReadTime
     # We need a shared dictionary
     wordDict = pymp.shared.dict()
     
@@ -82,13 +88,21 @@ def countByDocumentsParallel(fileNames, searchedWords):
         for i in p.range(len(searchedWords)):
             wordDict[searchedWords[i]] = 0
         
+        # We need somewhere to store the search time.
+        wordDict['filereadtime'] = 0
+        
         # Iterate through the list of documents.
         for name in p.iterate(fileNames):
-            print(f'Thread {p.thread_num} of {p.num_threads} is evaluating document {name}')
-            words = loadAllWords(name)
-            
             # We need a dictionary for each document.
             tempDict = dict()
+            
+            print(f'Thread {p.thread_num} of {p.num_threads} is evaluating document {name}')
+            start = time.monotonic()
+            words = loadAllWords(name)
+            elapsed = time.monotonic() - start
+            
+            # Store the read time in the dictionary.
+            tempDict['filereadtime'] = elapsed
             
             # Update the dictionary with the word and frequency.
             for word in searchedWords:
@@ -105,7 +119,13 @@ def countByDocumentsParallel(fileNames, searchedWords):
             # Finished updating the frequency, we can now
             # release the lock, so other processes can access it.
             lock.release()
-            
+    
+    # Update the global read time.
+    fileReadTime = wordDict['filereadtime']
+    
+    # Remove the read time from the dictionary.
+    del wordDict['filereadtime']
+    
     return wordDict
 
 # Counts the given words in the given documents,
@@ -146,6 +166,9 @@ def main():
     help = 'Indicates running in parallel, word or document per process.')
 
     args = parser.parse_args()
+    
+    # Have to declare as global.
+    global fileReadTime
     
     # Starting time of the program
     startTimeMaster = time.monotonic()
@@ -199,6 +222,7 @@ def main():
         print('Searched words and frequency:')
         for word, freq in sorted(result.items()):
             print(f'\t{word} - {freq}')
+        print('Total read time: %.4f seconds' % fileReadTime);
         print('Total search time: %.4f seconds' % elapsed)
         print('Total run time: %.4f seconds' % (time.monotonic() - startTimeMaster))
     
