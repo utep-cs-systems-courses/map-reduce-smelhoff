@@ -222,7 +222,7 @@ def main():
         print('Searched words and frequency:')
         for word, freq in sorted(result.items()):
             print(f'\t{word} - {freq}')
-        print('Total read time: %.4f seconds' % fileReadTime);
+        print('Total read time: %.4f seconds' % fileReadTime)
         print('Total search time: %.4f seconds' % elapsed)
         print('Total run time: %.4f seconds' % (time.monotonic() - startTimeMaster))
     
